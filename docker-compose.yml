@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+    nginx:
+        build:
+            context: ./deploy
+            dockerfile: nginx.dockerfile
+        ports:
+            - "80:80"
+        volumes:
+            - ./:/var/www/html
+        networks:
+            - app
+    php:
+        build:
+            context: ./deploy
+            dockerfile: php.dockerfile
+        volumes:
+            - ./:/var/www/html
+        ports:
+            - "9000:9000"
+        networks:
+            - app
+networks:
+    app:
