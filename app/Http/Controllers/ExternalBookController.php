@@ -5,16 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\BookResource;
 use \GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use const Grpc\STATUS_OK;
 
 class ExternalBookController extends Controller
 {
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
-    public function __invoke(Request $request): JsonResponse | BookResource
+    public function __invoke(Request $request): JsonResponse | BookCollection
     {
         abort_if(!$request->has('name') || empty($request->get('name')), 401);
 
@@ -35,9 +35,10 @@ class ExternalBookController extends Controller
             ], 404);
         }
 
-        return (new BookResource($json))
-            ->response()
-            ->setStatusCode(200);
-
+        return (new BookCollection($json))
+            ->additional([
+            "status_code" => 200,
+            "status" => "success"
+        ]);
     }
 }

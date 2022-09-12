@@ -2,84 +2,106 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BookRequest;
+use App\Http\Resources\BookCollection;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
+use App\Repository\Book\BookRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class BookController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function __construct(public BookRepository $bookRepository)
     {
-        //
+
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return BookCollection
      */
-    public function create()
+    public function index(): BookCollection
     {
-        //
+        $response = $this->bookRepository->all();
+
+        return (new BookCollection($response))
+            ->additional([
+                "status_code" => 200,
+                "status" => "success"
+            ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param BookRequest $request
+     * @return JsonResponse|BookResource
      */
-    public function store(Request $request)
+    public function store(BookRequest $request): JsonResponse|BookResource
     {
-        //
+        $request->validated();
+
+        $response = $this->bookRepository->save($request->all());
+
+        return (new BookResource($response))
+            ->additional([
+                "status_code" => 201,
+                "status" => "success"
+            ]);
     }
 
     /**
-     * Display the specified resource.
+     * Show the specified resource in storage.
      *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return BookResource|JsonResponse
+     * @throws \Exception
      */
-    public function show(Book $book)
+    public function show(int $id): BookResource|JsonResponse
     {
-        //
-    }
+        $response = $this->bookRepository->get($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Book $book)
-    {
-        //
+        return new BookResource($response);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Book $book
+     * @return BookResource|JsonResponse
      */
-    public function update(Request $request, Book $book)
+    public function update(Request $request, int $id): BookResource|JsonResponse
     {
-        //
+        $response = $this->bookRepository->update($id, $request->all());
+
+        return new BookResource($response);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return JsonResponse
+     * @throws \Exception
      */
-    public function destroy(Book $book)
+    public function destroy(int $id): JsonResponse
     {
-        //
+        $response = $this->bookRepository->delete($id);
+
+        $message = "Book not found";
+        if (isset($response->name)) {
+            $message = "The book ‘{$response->name}’ was deleted successfully";
+        }
+
+        return response()->json([
+            "status_code" => 204,
+            "status" => "success",
+            "message" => $message,
+            "data" => []
+        ]);
     }
 }
