@@ -32,7 +32,7 @@ class ExternalBookController extends Controller
                 "status_code" => 404,
                 "status" => "not found",
                 "data" => [],
-            ])->setStatusCode(404);
+            ], 404);
         }
 
         return (new BookResource($json))
