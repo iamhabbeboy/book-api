@@ -7,7 +7,7 @@ Setup procedures
 Then run migration with 
 > make shell 
 
-> php artisan migrate
+> php artisan migrate or php artisan migrate:fresh
  
 > php artisan db:seed
 

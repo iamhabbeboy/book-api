@@ -17,8 +17,6 @@ services:
         build:
             context: .
             dockerfile: php.dockerfile
-        env_file:
-            -   .env.example
         volumes:
             - ./:/var/www/html
         ports:
