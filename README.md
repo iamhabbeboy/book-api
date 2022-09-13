@@ -55,9 +55,4 @@ A seeder is included in the dockerfile for easy test.
      ```
 
 ### Running the test
-Run the test within the docker container bash shell with 
 > make test
-
-Then run 
-
-> php artisan test
