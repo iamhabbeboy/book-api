@@ -5,7 +5,7 @@ RUN apk update && apk add \
     bash
 
 # NGINX CONFIG
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY deploy/default.conf /etc/nginx/conf.d/default.conf
 
 # ENTRYPOINT nginx -g 'daemon off;'
 

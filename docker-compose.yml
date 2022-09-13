@@ -2,8 +2,9 @@ version: "3"
 
 services:
     nginx:
+        container_name: nginx
         build:
-            context: ./deploy
+            context: .
             dockerfile: nginx.dockerfile
         ports:
             - "80:80"
@@ -12,8 +13,9 @@ services:
         networks:
             - app
     php:
+        container_name: php
         build:
-            context: ./deploy
+            context: .
             dockerfile: php.dockerfile
         volumes:
             - ./:/var/www/html

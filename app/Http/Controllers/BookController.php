@@ -10,6 +10,7 @@ use App\Repository\Book\BookRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class BookController extends Controller
 {
@@ -29,7 +30,7 @@ class BookController extends Controller
 
         return (new BookCollection($response))
             ->additional([
-                "status_code" => 200,
+                "status_code" =>  ResponseAlias::HTTP_OK,
                 "status" => "success"
             ]);
     }
@@ -48,9 +49,11 @@ class BookController extends Controller
 
         return (new BookResource($response))
             ->additional([
-                "status_code" => 201,
+                "status_code" => ResponseAlias::HTTP_CREATED,
                 "status" => "success"
-            ]);
+            ])
+            ->response()
+            ->setStatusCode(ResponseAlias::HTTP_CREATED);
     }
 
     /**
@@ -64,7 +67,11 @@ class BookController extends Controller
     {
         $response = $this->bookRepository->get($id);
 
-        return new BookResource($response);
+        return (new BookResource($response))
+                ->additional([
+                    "status_code" => ResponseAlias::HTTP_OK,
+                    "status" => "success"
+                ]);
     }
 
     /**
@@ -78,7 +85,11 @@ class BookController extends Controller
     {
         $response = $this->bookRepository->update($id, $request->all());
 
-        return new BookResource($response);
+        return (new BookResource($response))
+                ->additional([
+                    "status_code" => ResponseAlias::HTTP_OK,
+                    "status" => "success"
+                ]);
     }
 
     /**
@@ -98,10 +109,10 @@ class BookController extends Controller
         }
 
         return response()->json([
-            "status_code" => 204,
+            "status_code" => ResponseAlias::HTTP_NO_CONTENT,
             "status" => "success",
             "message" => $message,
             "data" => []
-        ]);
+        ])->setStatusCode(ResponseAlias::HTTP_OK);
     }
 }

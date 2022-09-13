@@ -1,13 +1,8 @@
 FROM php:8.1.1-fpm-alpine
 
-RUN docker-php-ext-install pdo pdo_mysql
-
 RUN apk add shadow && usermod -u 1000 www-data && groupmod -g 1000 www-data
 
 RUN set -eux; apk add libzip-dev; docker-php-ext-install zip
-
-#RUN docker-php-ext-install pcntl
-#RUN docker-php-ext-configure pcntl --enable-pcntl
 
 
 RUN apk update \
@@ -15,4 +10,9 @@ RUN apk update \
     && php /tmp/composer-setup.php --no-ansi --install-dir=/usr/local/bin --filename=composer \
     && rm -rf /tmp/composer-setup.php
 
-WORKDIR /var/www/html
+
+#COPY database/database.sqlite /var/www/html/database.sqlite
+#
+#WORKDIR /var/www/html
+#
+#ENV DB_DATABASE database/database.sqlite
