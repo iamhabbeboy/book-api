@@ -9,10 +9,3 @@ RUN apk update \
     && php -r "copy('https://getcomposer.org/installer', '/tmp/composer-setup.php');" \
     && php /tmp/composer-setup.php --no-ansi --install-dir=/usr/local/bin --filename=composer \
     && rm -rf /tmp/composer-setup.php
-
-
-#COPY database/database.sqlite /var/www/html/database.sqlite
-#
-#WORKDIR /var/www/html
-#
-#ENV DB_DATABASE database/database.sqlite
